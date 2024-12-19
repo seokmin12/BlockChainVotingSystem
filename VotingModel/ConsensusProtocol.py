@@ -1,5 +1,6 @@
 class ConsensusProtocol:
-    def reachConsensus(self, blockchain):
+    @staticmethod
+    def reachConsensus(blockchain) -> bool:
         latestBlock = blockchain.getLatestBlock()
         previousBlock = blockchain.getPreviousBlock(latestBlock)
 
@@ -8,6 +9,7 @@ class ConsensusProtocol:
 
         return previousBlock.getHash() == latestBlock.getPreviousHash()
 
-    def validateBlock(self, block):
+    @staticmethod
+    def validateBlock(block) -> bool:
         hash = block.compute_hash()
         return hash == block.getHash()

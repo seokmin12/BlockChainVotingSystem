@@ -9,7 +9,7 @@ class Transaction:
         self.transactionId: str = self.calculateTransactionId()
         self.signature: [bytes] = None
 
-    def calculateTransactionId(self):
+    def calculateTransactionId(self) -> str:
         data: str = self.voterId + self.candidate
         try:
             hash: [bytes] = sha256(data.encode()).hexdigest()
@@ -29,21 +29,20 @@ class Transaction:
 
         return None
 
-    def verifySignature(self, public_key):
-        data = self.voterId + self.candidate + self.transactionId
+    def verifySignature(self, public_key) -> bool:
+        data: str = self.voterId + self.candidate + self.transactionId
         try:
-            verify = rsa.verify(data, self.signature, public_key)
-            print(verify)
+            rsa.verify(data.encode('utf-8'), self.signature, public_key)
             return True
         except (ValueError, TypeError) as e:
             print(e)
         return False
 
-    def getVoterId(self):
+    def getVoterId(self) -> str:
         return self.voterId
 
-    def getCandidate(self):
+    def getCandidate(self) -> str:
         return self.candidate
 
-    def getTransactionId(self):
+    def getTransactionId(self) -> str:
         return self.transactionId

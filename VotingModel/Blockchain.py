@@ -10,7 +10,7 @@ class Blockchain:
         genesisBlock: Block = self.createGenesisBlock()
         self.chain.append(genesisBlock)
 
-    def createGenesisBlock(self):
+    def createGenesisBlock(self) -> Block:
         genesisTransaction: Transaction = Transaction("0", "Genesis Block")
         return Block(0, "0", genesisTransaction)
 
@@ -20,15 +20,15 @@ class Blockchain:
         else:
             print("Invalid block. Consensus not reached.")
 
-    def getPreviousBlock(self, block: Block):
+    def getPreviousBlock(self, block: Block) -> Block:
         index = block.getIndex()
         if 0 < index <= len(self.chain):
             return self.chain[index - 1]
 
-    def getLatestBlock(self):
+    def getLatestBlock(self) -> Block:
         return self.chain[-1]
 
-    def isValid(self):
+    def isValid(self) -> bool:
         for i in range(1, len(self.chain)):
             currentBlock = self.chain[i]
             previousBlock = self.chain[i - 1]
@@ -43,7 +43,7 @@ class Blockchain:
     def setValid(self, valid: bool):
         self.valid = valid
 
-    def getChain(self):
+    def getChain(self) -> [Block]:
         return self.chain
 
     def setLatestBlock(self, latestBlock: Block):

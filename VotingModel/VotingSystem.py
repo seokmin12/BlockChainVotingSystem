@@ -10,7 +10,7 @@ from typing import List, Dict
 
 class VotingSystem:
     def __init__(self):
-        self.blockchain: Blockchain = None
+        self.blockchain: Blockchain = Blockchain()
         self.candidate_votes = defaultdict(int)
         self.candidates = ["Candidate1", "Candidate2", "Candidate3", "Candidate4"]
 
@@ -50,15 +50,15 @@ class VotingSystem:
     def synchronize_candidate_votes(self):
         self.candidate_votes.clear()
         for block in self.blockchain.getChain():
-            transaction = block.get_data()
-            if transaction is not None and transaction.get_candidate() != "Genesis Block":
-                candidate = transaction.get_candidate()
+            transaction = block.getData()
+            if transaction is not None and transaction.getCandidate() != "Genesis Block":
+                candidate = transaction.getCandidate()
                 self.candidate_votes[candidate] += 1
 
     def has_voted(self, voter_id: str) -> bool:
         for block in self.blockchain.getChain():
-            transaction = block.get_data()
-            if transaction is not None and transaction.get_voter_id() == voter_id:
+            transaction = block.getData()
+            if transaction is not None and transaction.getVoterId() == voter_id:
                 return True
         return False
 

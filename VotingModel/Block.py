@@ -1,6 +1,5 @@
 import time
 from hashlib import sha256
-import json
 from VotingModel.Transaction import Transaction
 
 
@@ -25,26 +24,26 @@ class Block:
         self.hash = self.compute_hash()
         self.valid: bool = False
 
-    def compute_hash(self):
+    def compute_hash(self) -> str:
         calculatedHash = apply_sha256(
             self.previous_hash + str(self.timestamp) + str(self.index) + self.data.getTransactionId()
         )
 
         return calculatedHash
 
-    def getIndex(self):
+    def getIndex(self) -> int:
         return self.index
 
     def getTimestamp(self):
         return self.timestamp
 
-    def getPreviousHash(self):
+    def getPreviousHash(self) -> str:
         return self.previous_hash
 
-    def getHash(self):
+    def getHash(self) -> str:
         return self.hash
 
-    def getData(self):
+    def getData(self) -> Transaction:
         return self.data
 
     def setPreviousHash(self, previous_hash):
@@ -53,7 +52,7 @@ class Block:
     def setHash(self, hash):
         self.hash = hash
 
-    def isValid(self):
+    def isValid(self) -> bool:
         return self.hash == self.compute_hash()
 
     def setValid(self, valid):
