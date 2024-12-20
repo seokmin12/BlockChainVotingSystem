@@ -1,0 +1,8 @@
+certifi
+charset-normalizer
+idna
+pip
+pyasn1
+requests
+rsa
+urllib3
