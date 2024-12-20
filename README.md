@@ -1,5 +1,5 @@
 <div align="center">
-    <h1 style="border-bottom: 0;">🗳️ 블록체인 기반 투표 시스템</h1>
+    <h3>🗳️ 블록체인 기반 투표 시스템</h3>
     <h4>Voting System Based On BlockChain</h4>
 </div>
 
