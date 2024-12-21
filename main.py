@@ -1,31 +1,59 @@
-import keyword
+import json
 import rsa
 from VotingModel.VotingSystem import VotingSystem
 
 public_key, private_key = rsa.newkeys(1024)
 
 voting_system = VotingSystem()
-voter_id: str
 
 
-def init():
-    global voter_id
-    voter_id = input("투표 아이디를 입력하세요 : ")
+def init() -> dict:
+    with open('./voters.json', 'r') as file:
+        voters = json.load(file)
+    return voters
 
 
-def act():
-    print("\n1. 투표하기 | 2. 체인 확인 | 3. 결과 계산 | 4. 종료")
+def get_pw(voter) -> str:
+    print(f"\n현재 투표자는 {voter['name']}입니다.")
+    pw = input("투표자의 비밀번호를 입력하세요 : ")
+    return pw
+
+
+def check_pw(voter, pw_input):
+    if pw_input != voter["password"]:
+        print("비밀번호가 일치하지 않습니다. 다시 입력하세요.")
+        pw = get_pw(voter)
+        check_pw(voter, pw)
+    else:
+        act(voter)
+
+
+def act(voter):
+    print("\n1. 투표하기 | 2. 체인 확인 | 3. 중간 결과 계산 | 4. 종료")
     result = int(input("번호를 입력하세요 : "))
-    return result
+    if result == 1:
+        voting(voter['id'])
+        act(voter)
+    elif result == 2:
+        get_chain()
+        act(voter)
+    elif result == 3:
+        print(get_results())
+        act(voter)
+    elif result == 4:
+        if voting_system.has_voted(voter['id']):
+            pass
+        else:
+            print("")
 
 
-def voting():
+def voting(voter_id):
     print("\n투표를 진행합니다.")
     print('-' * 50)
     print(voting_system.get_candidates())
     print('-' * 50)
     selected_candidate = input("투표를 원하시는 후보를 입력하세요 : ")
-    voting_system.cast_vote(voter_id=voter_id, candidate=selected_candidate, private_key=private_key,
+    voting_system.cast_vote(voter_id=str(voter_id), candidate=selected_candidate, private_key=private_key,
                             public_key=public_key)
 
 
@@ -38,21 +66,27 @@ def get_chain():
 
 def get_results():
     print("\n투표 결과를 확인합니다.")
-    print(voting_system.calculate_results())
+    return voting_system.calculate_results()
 
 
 try:
-    init()
-    while True:
-        act_result = act()
-        if act_result == 1:
-            voting()
-        elif act_result == 2:
-            get_chain()
-        elif act_result == 3:
-            get_results()
-        elif act_result == 4:
-            break
+    voters = init()
+    for voter in voters:
+        pw = get_pw(voter)
+        check_pw(voter, pw)
 
+    winner_candidate = []
+    max_vote_num = 0
+    for candidate, vote_num in get_results().items():
+        if vote_num > max_vote_num:
+            max_vote_num = vote_num
+            winner_candidate = [candidate]
+        elif vote_num == max_vote_num:
+            winner_candidate.append(candidate)
+
+    if len(winner_candidate) == 1:
+        print(f"{winner_candidate[0]}이(가) 당선되었습니다.")
+    else:
+        print("동점표가 나왔습니다. 투표를 다시 진행해 주세요.")
 except KeyboardInterrupt:
     print("종료")
