@@ -29,7 +29,7 @@ def check_pw(voter, pw_input):
 
 
 def act(voter):
-    print("\n1. 투표하기 | 2. 체인 확인 | 3. 결과 계산 | 4. 종료")
+    print("\n1. 투표하기 | 2. 체인 확인 | 3. 중간 결과 계산 | 4. 종료")
     result = int(input("번호를 입력하세요 : "))
     if result == 1:
         voting(voter['id'])
@@ -38,10 +38,10 @@ def act(voter):
         get_chain()
         act(voter)
     elif result == 3:
-        get_results()
+        print(get_results())
         act(voter)
     elif result == 4:
-        if voting_system.has_voted():
+        if voting_system.has_voted(voter['id']):
             pass
         else:
             print("")
@@ -66,7 +66,7 @@ def get_chain():
 
 def get_results():
     print("\n투표 결과를 확인합니다.")
-    print(voting_system.calculate_results())
+    return voting_system.calculate_results()
 
 
 try:
@@ -74,6 +74,19 @@ try:
     for voter in voters:
         pw = get_pw(voter)
         check_pw(voter, pw)
-    get_chain()
+
+    winner_candidate = []
+    max_vote_num = 0
+    for candidate, vote_num in get_results().items():
+        if vote_num > max_vote_num:
+            max_vote_num = vote_num
+            winner_candidate = [candidate]
+        elif vote_num == max_vote_num:
+            winner_candidate.append(candidate)
+
+    if len(winner_candidate) == 1:
+        print(f"{winner_candidate[0]}이(가) 당선되었습니다.")
+    else:
+        print("동점표가 나왔습니다. 투표를 다시 진행해 주세요.")
 except KeyboardInterrupt:
     print("종료")
